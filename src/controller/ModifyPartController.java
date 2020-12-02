@@ -9,10 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import model.InHouse;
-import model.Inventory;
-import model.Outsourced;
-import model.Part;
+import model.*;
 
 
 import java.beans.ExceptionListener;
@@ -131,12 +128,14 @@ public class ModifyPartController implements Initializable {
             priceTxt.setText(String.valueOf(part.getPrice()));
             maxTxt.setText(String.valueOf(part.getMax()));
             minTxt.setText(String.valueOf(part.getMin()));
-            machineIdTxt.setText(String.valueOf(part.getMin()));
-            if (part.getClass().toString().contains("InHouse")) {
+
+            if ((part instanceof InHouse)) {
                 machineIdLbl.setText("Machine ID");
+                machineIdTxt.setText(String.valueOf(((InHouse) part).getMachineId()));
                 inHouseRBtn.setSelected(true);
-            } else {
+            } else if (part instanceof Outsourced){
                 machineIdLbl.setText("Company Name");
+                machineIdTxt.setText(((Outsourced) part).getCompanyName());
                 outsourcedRBtn.setSelected(true);
             }
 
@@ -181,17 +180,31 @@ public class ModifyPartController implements Initializable {
             double price = Double.parseDouble(priceTxt.getText());
             int min = Integer.parseInt(minTxt.getText());
             int max = Integer.parseInt(maxTxt.getText());
-            int machineId = Integer.parseInt(machineIdTxt.getText());
+
 
 
             if (inHouseRBtn.isSelected()) {
-                Part updatedPart = new InHouse(id, name, price, stock, min, max, machineId);
-                Inventory.partUpdate(Integer.valueOf(idTxt.getText()), updatedPart);
+                System.out.println("InHouse is Pressed");
+                int machineId = Integer.parseInt(machineIdTxt.getText());
+                Part newPart = new InHouse(id, name, price, stock, min, max, machineId);
+                for (Part part : Inventory.getAllParts())
+                    if(part.getId() == Integer.valueOf(idTxt.getText()))
+                        Inventory.partUpdate(part.getId(), newPart);
+
             } else if (outsourcedRBtn.isSelected()) {
+                System.out.println("Outsourced is pressed");
                 String companyName = machineIdTxt.getText();
-                Part updatedPart = new Outsourced(id, name, price, stock, min, max, companyName);
-                Inventory.partUpdate(Integer.valueOf(idTxt.getText()), updatedPart);
+                Part newPart = new Outsourced(id, name, price, stock, min, max, companyName);
+                for (Part part : Inventory.getAllParts())
+                    if(part.getId() == Integer.valueOf(idTxt.getText())) {
+                        Inventory.partUpdate(part.getId(), newPart);
+
+                    }
             }
+
+
+
+
 
             sceneManage("/view/ProductsAndPartsMain.fxml", event);
 

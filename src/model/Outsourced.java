@@ -3,7 +3,7 @@ package model;
 /** This class creates InHouse objects from Part Objects. */
 public class Outsourced extends Part {
 
-    public String companyName;
+    private String companyName;
 
     /** This method gets the company name of the outsourced part.
      * @return name of company. */
@@ -27,10 +27,7 @@ public class Outsourced extends Part {
      * @param companyName  is the company name. */
     public Outsourced(int id, String name, double price, int stock, int min, int max, String companyName) {
         super(id, name, price, stock, min, max);
+        this.companyName = companyName;
     }
 
-
-//    + Outsourced(id : int, name : String,
-//price : double, stock : int, min : int, max : int,
-//companyName:String)
 }

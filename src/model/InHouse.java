@@ -2,16 +2,16 @@ package model;
 /** This class creates InHouse objects from Part Objects*/
 public class InHouse extends Part {
 
-    public int machineID;
+    private int machineID;
 
     /** This method returns the MachineID of the part.
      * @return the machineID. */
-    public int getMachineID() {
+    public int getMachineId() {
         return machineID;
     }
     /** This method sets the MachineID of the part.
      * @param machineID is the id which will be set. */
-    public void setMachineID(int machineID) {
+    public void setMachineId(int machineID) {
         this.machineID = machineID;
     }
     /** This method is the constructor of the InHouse subclass of a Part.
@@ -25,5 +25,6 @@ public class InHouse extends Part {
 
     public InHouse(int id, String name, double price, int stock, int min, int max, int machineId) {
         super(id, name, price, stock, min, max);
+        this.machineID = machineId;
     }
 }

@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static controller.ProductsAndPartsMainController.idCounter;
-import static controller.ProductsAndPartsMainController.partFilter;
+import static model.Inventory.lookupPart;
 
 /** This class controls the Modify Product form*/
 public class ModifyProductController implements Initializable {
@@ -148,7 +148,7 @@ public class ModifyProductController implements Initializable {
         try
 
         {
-            ModifyProductAllPartsTbl.setItems(partFilter(addProductSearchTxt.getText()));
+            ModifyProductAllPartsTbl.setItems(lookupPart(addProductSearchTxt.getText()));
             if (Inventory.getFilteredParts().size() == 1) {
                 ModifyProductAllPartsTbl.getSelectionModel().select(0);
             }
@@ -237,11 +237,14 @@ public class ModifyProductController implements Initializable {
 
                 sceneManage("/view/ProductsAndPartsMain.fxml", event);
             }
-        } catch (IOException e) {
-            System.out.println(e);
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            }
         }
 
-    }
 
     /** This method is called from the main menu when a user modifies a product. It sends the data to the Modify Product page so that
      * the user is able to easily alter their data with pre-filled inputs.
@@ -257,17 +260,12 @@ public class ModifyProductController implements Initializable {
 
             ModifyProductsAssocPartsTbl.setItems(product.getAllAssociatedParts());
 
-            assocPartIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-            assocPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-            assocInvCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
-            assocPriceCostCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         } catch (NullPointerException ex) {
             System.out.println("Exception " + ex);
         }
     }
-    /** This method is called when the window is first loaded. Within, it sets the id TextField with the current counter. A new object is created that can then be called upon
-     * later.
+    /** This method is called when the window is first loaded.
      @param url is the location where this class is found.
      @param rb helps facilitate actions with objects.
      */
@@ -281,6 +279,10 @@ public class ModifyProductController implements Initializable {
         priceCostCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
 
+        assocPartIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        assocPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        assocInvCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        assocPriceCostCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
 
 

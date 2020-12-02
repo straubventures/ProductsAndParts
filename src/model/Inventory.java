@@ -3,6 +3,7 @@ package model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import javafx.scene.control.Alert;
 import model.InHouse;
 /** This class creates list objects for Part and Product objects. */
 public class Inventory {
@@ -25,56 +26,98 @@ public class Inventory {
 
     /** This method finds a part from the allParts list.
      @param partID is the id of the part which the user wishes to lookup. */
-    public static void lookUpPart(int partID) {
+    public static Part lookUpPart(int partID) {
+        Part desiredPart = null;
         for (Part part : Inventory.getAllParts()) {
             if (part.getId() == partID) {
-                System.out.println(part.getName());
+                desiredPart = part;
             }
-        }
+        } return desiredPart;
     }
     /** This method finds a product from the allProducts list.
      @param prodID is the id of the product which the user wishes to lookup. */
-    public static void lookUpProduct(int prodID) {
+    public static Product lookUpProduct(int prodID) {
+        Product desiredProd = null;
         for (Product prod : Inventory.getAllProducts()) {
             if (prod.getId() == prodID) {
-                System.out.println(prod.getAllAssociatedParts());
+                desiredProd = prod;
             }
-        }
+        } return desiredProd;
     }
-    /** This method finds a part from the allParts list.
-     @param partName is the name of the part which the user wishes to lookup. */
-    public static void lookUpPart(String partName) {
+
+
+    /** This feature gave me numerous logical errors. Eventually, I was able to figure out that '!' needs to be in front of parentheses,
+     * I needed to develop my Inventory class methods, and I needed to learn the for loop format for Java within class lists. */
+    /** This method is used to filter through the products while searching them.
+     @param name is the user input. */
+    public static ObservableList<Product> lookupProduct(String name) {
+
+        if (!(Inventory.getFilteredProducts().isEmpty())) {
+            Inventory.getFilteredProducts().clear();
+        }
+
+        for (Product part : Inventory.getAllProducts()) {
+            if (part.getName().contains(name) || String.valueOf(part.getId()).contains(name)) {
+                Inventory.getFilteredProducts().add(part);
+            }
+
+        }
+        if (Inventory.getFilteredProducts().isEmpty()) {
+            Alert noResult = new Alert(Alert.AlertType.ERROR);
+            noResult.setContentText("No Results Found");
+            noResult.setTitle("Error Message");
+            noResult.showAndWait();
+            return Inventory.getAllProducts();
+        } {
+            return Inventory.getFilteredProducts();
+        }
+
+    }
+
+    /** This method is used to filter through the parts while searching them.
+     @param name is the user input. */
+    public static ObservableList<Part> lookupPart(String name) {
+
+        if (!(Inventory.getFilteredParts().isEmpty())) {
+            Inventory.getFilteredParts().clear();
+        }
+
         for (Part part : Inventory.getAllParts()) {
-            if (part.getName() == partName) {
-                System.out.println(part.getId());
+            if (part.getName().contains(name) || String.valueOf(part.getId()).contains(name)) {
+                Inventory.getFilteredParts().add(part);
             }
+
+        }
+        if (Inventory.getFilteredParts().isEmpty()) {
+            Alert noResult = new Alert(Alert.AlertType.ERROR);
+            noResult.setContentText("No Results Found");
+            noResult.setTitle("Error Message");
+            noResult.showAndWait();
+
+
+            return Inventory.getAllParts();
+        } else {
+            return Inventory.getFilteredParts();
         }
     }
-    /** This method finds a product from the allProducts list.
-     @param prodName is the name of the product which the user wishes to lookup. */
-    public static void lookUpProduct(String prodName) {
-        for (Product prod : Inventory.getAllProducts()) {
-            if (prod.getName() == prodName) {
-                System.out.println(prod.getAllAssociatedParts());
-            }
-        }
-    }
+
     /** This method updates a product on the allProducts list.
      @param id is the id of the product which the user would like the update.
      @param product is the product the user will use to replace the old object.
      @return the boolean value of if the product was found, and therefore updated. */
-    public static boolean prodUpdate(int id, Product product) {
+    public static void prodUpdate(int id, Product product) {
         int index = -1;
 
-        for (Product part : Inventory.getAllProducts()) {
+        for (Product product1 : Inventory.getAllProducts()) {
             index++;
 
-            if (part.getId() == id) {
+            if (product1.getId() == id) {
                 Inventory.getAllProducts().set(index, product);
-                return true;
+
+
             }
         }
-        return false;
+
     }
 
 
@@ -82,26 +125,26 @@ public class Inventory {
      * @param id is the id of the product which the user wishes to delete.
      * @return the removal of the designated part. */
     public static boolean prodDelete(int id) {
-        int index = -1;
+
 
         for (Product part : Inventory.getAllProducts()) {
-            index++;
+
 
             if (part.getId() == id) {
-                return Inventory.getAllProducts().remove(part);
-
+                Inventory.getAllProducts().remove(part);
+                return true;
 
             }
 
-        }
-        return false;
+        } return false;
+
     }
 
     /** This method updates a part to the allParts list.
      @param id is the id of the part which the user would like to update.
      @param part is the part which will replace the old part.
      @return the boolean value of whether the part was found and therefore updated. */
-    public static boolean partUpdate(int id, Part part) {
+    public static void partUpdate(int id, Part part) {
         int index = -1;
 
         for (Part cog: Inventory.getAllParts()) {
@@ -109,10 +152,9 @@ public class Inventory {
 
             if (cog.getId() == id) {
                 Inventory.getAllParts().set(index, part);
-                return true;
+
             }
         }
-        return false;
     }
     /** This method deletes a part to the allParts list.
      * @param id is the is of the part which will be deleted.
@@ -124,7 +166,8 @@ public class Inventory {
 
 
             if (part.getId() == id) {
-                return Inventory.getAllParts().remove(part);
+                Inventory.getAllParts().remove(part);
+                return true;
 
 
             }

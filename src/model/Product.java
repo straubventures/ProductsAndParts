@@ -135,8 +135,13 @@ public class Product {
     /**
      * @param part is the associated part that will be deleted.
      */
-    public void delAssocPart(Part part) {
+    public boolean delAssocPart(Part part) {
+        if (!(associatedParts.remove(part))) {
+            return false;
+        }
         associatedParts.remove(part);
+        return true;
+
     }
 
     /**

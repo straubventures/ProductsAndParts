@@ -174,7 +174,7 @@ public class AddPartController implements Initializable {
          }
      }catch (NumberFormatException ex){
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("ERROR: You messed up.");
+            alert.setTitle("Error");
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }}

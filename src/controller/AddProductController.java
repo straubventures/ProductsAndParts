@@ -19,10 +19,7 @@ import model.Product;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Optional;
+import java.util.*;
 
 import static controller.ProductsAndPartsMainController.idCounter;
 
@@ -39,6 +36,11 @@ public class AddProductController implements Initializable {
         scene = FXMLLoader.load(getClass().getResource(address));
         stage.setScene(new Scene(scene));
         stage.show();
+        String x = "hello";
+        x.substring(0,4);
+        String[] d = {"0001", "asf"};
+        int sdf = 50123;
+        
     }
 
 
@@ -222,7 +224,8 @@ public class AddProductController implements Initializable {
                 alert.setContentText("Please ensure your inventory levels are appropriate between the max, min, and inventory fields.");
                 alert.showAndWait();
             } else {
-                int id = idCounter - 1;
+                int id = idCounter;
+                idCounter++;
                 String name = addProdNameTxt.getText();
                 int stock = Integer.parseInt(addProdInvTxt.getText());
                 double price = Double.parseDouble(AddProdPriceTxt.getText());
@@ -240,14 +243,17 @@ public class AddProductController implements Initializable {
 
                     }
                 }
-                idCounter++;
+
                 sceneManage("/view/ProductsAndPartsMain.fxml", event);
             }
 
 
 
         } catch (NumberFormatException ex) {
-            System.out.println("Exception " + ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
         }
 
 

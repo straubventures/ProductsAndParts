@@ -27,6 +27,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static model.Inventory.*;
+
 /** This class is the controller for Main file of an Inventory System app*/
 public class ProductsAndPartsMainController implements Initializable {
 
@@ -216,6 +218,7 @@ public class ProductsAndPartsMainController implements Initializable {
     void onActExit(ActionEvent event) throws IOException {
         System.exit(0);
     }
+
     /** This handles the modify part button.
      @param event navigates to the modify part page. It also calls the sendPart() method in the Modify Part Controller. */
     @FXML
@@ -238,10 +241,10 @@ public class ProductsAndPartsMainController implements Initializable {
             ModifyPartController MPController = loader.getController();
             MPController.sendPart(partTblView.getSelectionModel().getSelectedItem());
 
+            stage = (Stage)((Button)event.getSource()).getScene().getWindow();
             Parent scene = loader.getRoot();
-            Stage stage = new Stage();
             stage.setScene(new Scene(scene));
-            stage.showAndWait();
+            stage.show();
         }
     }
     /** This handles the modify product button.
@@ -267,10 +270,10 @@ public class ProductsAndPartsMainController implements Initializable {
             ModifyProductController MPController = loader.getController();
             MPController.sendProduct(prodTblView.getSelectionModel().getSelectedItem());
 
+            stage = (Stage)((Button)event.getSource()).getScene().getWindow();
             Parent scene = loader.getRoot();
-            Stage stage = new Stage();
             stage.setScene(new Scene(scene));
-            stage.showAndWait();
+            stage.show();
 
         }
     }
@@ -279,7 +282,7 @@ public class ProductsAndPartsMainController implements Initializable {
     @FXML
     void onActSearchParts(KeyEvent event) throws IOException {
         try {
-            partTblView.setItems(partFilter(partSearchTxt.getText()));
+            partTblView.setItems(lookupPart(partSearchTxt.getText()));
             if (Inventory.getFilteredParts().size() == 1) {
                 partTblView.getSelectionModel().select(0);
             }
@@ -288,12 +291,13 @@ public class ProductsAndPartsMainController implements Initializable {
             System.out.println("Exception: " + ex);
         }
     }
+
     /** This handles the search products textfield.
      @param event handles the filtering of the results */
     @FXML
     void onActSearchProducts(KeyEvent event) throws IOException {
         try {
-            prodTblView.setItems(prodFilter(prodSearchTxt.getText()));
+            prodTblView.setItems(lookupProduct(prodSearchTxt.getText()));
             if (Inventory.getFilteredProducts().size() == 1) {
                 prodTblView.getSelectionModel().select(0);
             }
@@ -304,63 +308,6 @@ public class ProductsAndPartsMainController implements Initializable {
             System.out.println("Exception " + ex);
         }
     }
-
-
-/** This feature gave me numerous logical errors. Eventually, I was able to figure out that '!' needs to be in front of parentheses,
- * I needed to develop my Inventory class methods, and I needed to learn the for loop format for Java within class lists. */
-    /** This method is used to filter through the products while searching them.
-     @param name is the user input. */
-    public ObservableList<Product> prodFilter(String name) {
-
-        if (!(Inventory.getFilteredProducts().isEmpty())) {
-            Inventory.getFilteredProducts().clear();
-        }
-
-        for (Product part : Inventory.getAllProducts()) {
-            if (part.getName().contains(name) || String.valueOf(part.getId()).contains(name)) {
-                Inventory.getFilteredProducts().add(part);
-            }
-
-        }
-        if (Inventory.getFilteredProducts().isEmpty()) {
-            Alert noResult = new Alert(Alert.AlertType.ERROR);
-            noResult.setContentText("No Results Found");
-            noResult.setTitle("Error Message");
-            noResult.showAndWait();
-            return Inventory.getAllProducts();
-        } {
-                return Inventory.getFilteredProducts();
-            }
-
-    }
-
-    /** This method is used to filter through the parts while searching them.
-     @param name is the user input. */
-    public static ObservableList<Part> partFilter(String name) {
-
-        if (!(Inventory.getFilteredParts().isEmpty())) {
-            Inventory.getFilteredParts().clear();
-        }
-
-        for (Part part : Inventory.getAllParts()) {
-            if (part.getName().contains(name) || String.valueOf(part.getId()).contains(name)) {
-                Inventory.getFilteredParts().add(part);
-            }
-
-        }
-        if (Inventory.getFilteredParts().isEmpty()) {
-            Alert noResult = new Alert(Alert.AlertType.ERROR);
-            noResult.setContentText("No Results Found");
-            noResult.setTitle("Error Message");
-            noResult.showAndWait();
-
-
-            return Inventory.getAllParts();
-        } else {
-            return Inventory.getFilteredParts();
-        }
-    }
-
 
 
     /** This method is called when the window is first loaded. Within, it sets the id TextField with the current counter. A new object is created that can then be called upon
